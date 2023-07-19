@@ -17,6 +17,7 @@ type Expression interface {
 }
 
 type Program struct {
+	Node
 	Statements []Statement
 }
 
@@ -43,12 +44,12 @@ type LetStatement struct {
 	Value Expression
 }
 
-func (ls *LetStatement) statementNode() {
-
-}
-
 func (ls *LetStatement) TokenLiteral() string {
 	return ls.Token.Literal
+}
+
+func (ls *LetStatement) statementNode() {
+
 }
 
 func (ls *LetStatement) expressionNode() {
@@ -65,5 +66,18 @@ func (rs *ReturnStatement) TokenLiteral() string {
 }
 
 func (rs *ReturnStatement) statementNode() {
+
+}
+
+type ExpressionStatement struct {
+	Token      token.Token
+	Expression Expression
+}
+
+func (es *ExpressionStatement) TokenLiteral() string {
+	return es.Token.Literal
+}
+
+func (es *ExpressionStatement) statementNode() {
 
 }
