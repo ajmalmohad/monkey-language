@@ -6,6 +6,18 @@ import (
 	"testing"
 )
 
+func checkParserErrors(t *testing.T, p *Parser) {
+	errors := p.Errors()
+	if len(errors) == 0 {
+		return
+	}
+	t.Errorf("Parse had %d errors!", len(errors))
+	for _, msg := range errors {
+		t.Errorf("Parser error: %q", msg)
+	}
+	t.FailNow()
+}
+
 func TestLetStatements(test *testing.T) {
 	input := `
 		let x = 5;
@@ -17,6 +29,8 @@ func TestLetStatements(test *testing.T) {
 	parse := CreateParser(lex)
 
 	program := parse.parseProgram()
+	checkParserErrors(test, parse)
+
 	if program == nil {
 		test.Fatalf("parseProgram() returned nil")
 	}
@@ -47,6 +61,7 @@ func testLetStatement(t *testing.T, s ast.Statement, name string) bool {
 		return false
 	}
 
+	// Assertion to check if s is of type LetStatement
 	letStmt, ok := s.(*ast.LetStatement)
 	if !ok {
 		t.Errorf("s not *ast.LetStatement got=%T", s)
