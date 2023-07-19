@@ -9,13 +9,10 @@ import (
 	"monkey/token"
 )
 
-const PROMPT = ">> "
-
-func Start(in io.Reader, out io.Writer) {
+func StartREPL(in io.Reader, out io.Writer) {
 	scanner := bufio.NewScanner(in)
-
 	for {
-		fmt.Print(PROMPT)
+		fmt.Print(">> ")
 		scanned := scanner.Scan()
 		if !scanned {
 			return
