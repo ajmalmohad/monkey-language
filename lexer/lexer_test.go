@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestNextToken(test *testing.T) {
+func TestNextTokens(test *testing.T) {
 	input := `=+(){},;`
 
 	tests := []struct {
@@ -39,7 +39,7 @@ func TestNextToken(test *testing.T) {
 	}
 }
 
-func TestNextToken2(test *testing.T) {
+func TestStatementTokens(test *testing.T) {
 	input := `let five = 5;
 			  let ten = 10;
 			  let add = fn(x, y){
@@ -128,7 +128,7 @@ func TestNextToken2(test *testing.T) {
 	}
 }
 
-func TestNextToken3(test *testing.T) {
+func TestExpressionTokens(test *testing.T) {
 	input := `if(5 < 10){
 				return true;
 			  }else{
