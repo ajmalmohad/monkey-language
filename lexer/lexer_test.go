@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestNextTokens(test *testing.T) {
+func TestBasicTokens(test *testing.T) {
 	input := `=+(){},;`
 
 	tests := []struct {

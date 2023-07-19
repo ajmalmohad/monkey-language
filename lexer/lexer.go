@@ -7,14 +7,20 @@ import (
 
 type Lexer struct {
 	input        string
-	position     int  // current char pos
-	readPosition int  // after current char pos
-	character    byte // current char
+	position     int
+	readPosition int
+	character    byte
+}
+
+func CreateLexer(input string) *Lexer {
+	lexer := &Lexer{input: input}
+	lexer.readChar()
+	return lexer
 }
 
 func (lexer *Lexer) readChar() {
 	if lexer.readPosition >= len(lexer.input) {
-		lexer.character = 0 // Represents NULL
+		lexer.character = 0
 	} else {
 		lexer.character = lexer.input[lexer.readPosition]
 	}
@@ -24,7 +30,7 @@ func (lexer *Lexer) readChar() {
 
 func (lexer *Lexer) peekChar() byte {
 	if lexer.readPosition >= len(lexer.input) {
-		return 0 // Represents NULL
+		return 0
 	} else {
 		return lexer.input[lexer.readPosition]
 	}
@@ -44,6 +50,14 @@ func (lexer *Lexer) readNumber() string {
 		lexer.readChar()
 	}
 	return lexer.input[position:lexer.position]
+}
+
+func createToken(tokenType token.TokenType, character byte) token.Token {
+	return token.Token{Type: tokenType, Literal: string(character)}
+}
+
+func createStringToken(tokenType token.TokenType, literal string) token.Token {
+	return token.Token{Type: tokenType, Literal: literal}
 }
 
 func (lexer *Lexer) makeTwoCharToken(lookahead byte, foundToken token.TokenType, notFoundToken token.TokenType) token.Token {
@@ -102,11 +116,11 @@ func (lexer *Lexer) NextToken() token.Token {
 		if util.IsLetter(lexer.character) {
 			current.Literal = lexer.readIdentifier()
 			current.Type = token.LookUpIdentity(current.Literal)
-			return current // We already moved readChar so no need to go further
+			return current
 		} else if util.IsDigit(lexer.character) {
 			current.Type = token.INT
 			current.Literal = lexer.readNumber()
-			return current // We already moved readChar so no need to go further
+			return current
 		} else {
 			current = createToken(token.ILLEGAL, lexer.character)
 		}
@@ -114,18 +128,4 @@ func (lexer *Lexer) NextToken() token.Token {
 
 	lexer.readChar()
 	return current
-}
-
-func createToken(tokenType token.TokenType, character byte) token.Token {
-	return token.Token{Type: tokenType, Literal: string(character)}
-}
-
-func createStringToken(tokenType token.TokenType, literal string) token.Token {
-	return token.Token{Type: tokenType, Literal: literal}
-}
-
-func CreateLexer(input string) *Lexer {
-	lexer := &Lexer{input: input} // Other values Default to 0
-	lexer.readChar()              // Initial state is set
-	return lexer
 }
