@@ -246,7 +246,7 @@ func testIntegerLiteral(test *testing.T, il ast.Expression, value int64) bool {
 }
 
 func TestInfixExpression(test *testing.T) {
-	prefixTests := []struct {
+	infixTests := []struct {
 		input      string
 		leftValue  int64
 		operator   string
@@ -262,7 +262,7 @@ func TestInfixExpression(test *testing.T) {
 		{"5 != 5;", 5, "!=", 5},
 	}
 
-	for _, tt := range prefixTests {
+	for _, tt := range infixTests {
 		lex := lexer.CreateLexer(tt.input)
 		parse := CreateParser(lex)
 		program := parse.parseProgram()
@@ -294,6 +294,71 @@ func TestInfixExpression(test *testing.T) {
 		}
 		if !testIntegerLiteral(test, exp.Right, tt.rightValue) {
 			return
+		}
+	}
+}
+
+func TestOperatorPrecedenceParsing(test *testing.T) {
+	tests := []struct {
+		input    string
+		expected string
+	}{
+		{
+			"-a * b",
+			"((-a) * b)",
+		},
+		{
+			"!-a",
+			"(!(-a))",
+		},
+		{
+			"a + b - c",
+			"((a + b) - c)",
+		},
+		{
+			"a * b * c",
+			"((a * b) * c)",
+		},
+		{
+			"a * b / c",
+			"((a * b) / c)",
+		},
+		{
+			"a + b / c",
+			"(a + (b / c))",
+		},
+		{
+			"a + b * c + d / e - f",
+			"(((a + (b * c)) + (d / e)) - f)",
+		},
+		{
+			"3 + 4; -5 * 5",
+			"(3 + 4)((-5) * 5)",
+		},
+		{
+			"5 > 4 == 3 < 4",
+			"((5 > 4) == (3 < 4))",
+		},
+		{
+			"5 < 4 != 3 > 4",
+			"((5 < 4) != (3 > 4))",
+		},
+		{
+			"3 + 4 * 5 == 3 * 1 + 4 * 5",
+			"((3 + (4 * 5)) == ((3 * 1) + (4 * 5)))",
+		},
+	}
+
+	for _, tt := range tests {
+		lex := lexer.CreateLexer(tt.input)
+		parse := CreateParser(lex)
+		program := parse.parseProgram()
+		checkParserErrors(test, parse)
+
+		actual := program.String()
+
+		if actual != tt.expected {
+			test.Errorf("Expected=%q, got=%q", tt.expected, actual)
 		}
 	}
 }
