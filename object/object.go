@@ -25,7 +25,7 @@ type Integer struct {
 	Value int64
 }
 
-func (i *Integer) Token() ObjectType {
+func (i *Integer) Type() ObjectType {
 	return INTEGER_OBJ
 }
 
@@ -41,7 +41,7 @@ type Boolean struct {
 	Value bool
 }
 
-func (b *Boolean) Token() ObjectType {
+func (b *Boolean) Type() ObjectType {
 	return BOOLEAN_OBJ
 }
 
@@ -55,7 +55,7 @@ func (b *Boolean) Inspect() string {
 
 type Null struct{}
 
-func (n *Null) Token() ObjectType {
+func (n *Null) Type() ObjectType {
 	return NULL_OBJ
 }
 
