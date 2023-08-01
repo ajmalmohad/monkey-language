@@ -109,22 +109,22 @@ func evalIntegerInfixExpression(operator string, left object.Object, right objec
 		return &object.Integer{Value: value}
 	case "==":
 		value := leftVal == rightVal
-		return &object.Boolean{Value: value}
+		return nativeBoolToBooleanObject(value)
 	case "!=":
 		value := leftVal != rightVal
-		return &object.Boolean{Value: value}
+		return nativeBoolToBooleanObject(value)
 	case ">":
 		value := leftVal > rightVal
-		return &object.Boolean{Value: value}
+		return nativeBoolToBooleanObject(value)
 	case "<":
 		value := leftVal < rightVal
-		return &object.Boolean{Value: value}
+		return nativeBoolToBooleanObject(value)
 	case ">=":
 		value := leftVal >= rightVal
-		return &object.Boolean{Value: value}
+		return nativeBoolToBooleanObject(value)
 	case "<=":
 		value := leftVal <= rightVal
-		return &object.Boolean{Value: value}
+		return nativeBoolToBooleanObject(value)
 	default:
 		return NULL
 	}
