@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 
+	"monkey/evaluator"
 	"monkey/lexer"
 	"monkey/parser"
 )
@@ -27,9 +28,9 @@ func StartREPL(in io.Reader, out io.Writer) {
 			continue
 		}
 
-		// evaluated := evaluator.Eval(program)
+		evaluated := evaluator.Eval(program)
 		if program != nil {
-			io.WriteString(out, program.String())
+			io.WriteString(out, evaluated.Inspect())
 			io.WriteString(out, "\n")
 		}
 	}
