@@ -68,14 +68,14 @@ func (b *Null) Inspect() string {
  * * Return
  */
 
-type Return struct {
+type ReturnValue struct {
 	Value Object
 }
 
-func (r *Return) Type() ObjectType {
+func (rv *ReturnValue) Type() ObjectType {
 	return RETURN_VALUE_OBJ
 }
 
-func (r *Return) Inspect() string {
-	return r.Value.Inspect()
+func (rv *ReturnValue) Inspect() string {
+	return rv.Value.Inspect()
 }
