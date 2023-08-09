@@ -54,6 +54,17 @@ func (lexer *Lexer) readIdentifier() string {
 	return lexer.input[position:lexer.position]
 }
 
+func (lexer *Lexer) readString() string {
+	position := lexer.position + 1
+	for {
+		lexer.readChar()
+		if lexer.character == '"' || lexer.character == 0 {
+			break
+		}
+	}
+	return lexer.input[position:lexer.position]
+}
+
 func createToken(tokenType token.TokenType, character byte) token.Token {
 	return token.Token{Type: tokenType, Literal: string(character)}
 }
