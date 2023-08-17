@@ -227,10 +227,10 @@ func TestErrorHandling(t *testing.T) {
 			"true + false;",
 			"unknown operator: BOOLEAN + BOOLEAN",
 		},
-		// {
-		// 	"true + false + true + false;",
-		// 	"unknown operator: BOOLEAN + BOOLEAN",
-		// },
+		{
+			"true + false + true + false;",
+			"unknown operator: BOOLEAN + BOOLEAN",
+		},
 		{
 			"5; true + false; 5",
 			"unknown operator: BOOLEAN + BOOLEAN",
@@ -257,6 +257,14 @@ func TestErrorHandling(t *testing.T) {
 		{
 			`"Hello" - "World"`,
 			"unknown operator: STRING - STRING",
+		},
+		{
+			`{"name": "Monkey"}[fn(x) { x }];`,
+			"unusable as hash key: FUNCTION",
+		},
+		{
+			`999[1]`,
+			"index operator not supported: INTEGER",
 		},
 	}
 
