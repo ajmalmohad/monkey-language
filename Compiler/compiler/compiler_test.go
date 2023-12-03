@@ -18,6 +18,7 @@ func TestIntegerArithmetic(t *testing.T) {
 			expectedInstructions: []code.Instructions{
 				code.Make(code.OpConstant, 0),
 				code.Make(code.OpConstant, 1),
+				code.Make(code.OpAdd),
 			},
 		},
 	}
@@ -63,13 +64,13 @@ func testInstructions(expected []code.Instructions, actual code.Instructions) er
 	concatted := concatInstructions(expected)
 
 	if len(actual) != len(concatted) {
-		return fmt.Errorf("wrong instructions length.\n want=%q\ngot=%q",
+		return fmt.Errorf("wrong instructions length.\nwant=%q\ngot=%q",
 			concatted, actual)
 	}
 
 	for i, ins := range concatted {
 		if actual[i] != ins {
-			return fmt.Errorf("wrong instruction at %d. \nwant=%q\ngot=%q",
+			return fmt.Errorf("wrong instruction at %d.\nwant=%q\ngot=%q",
 				i, concatted, actual)
 		}
 	}
