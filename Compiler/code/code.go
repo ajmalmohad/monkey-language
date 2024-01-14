@@ -23,6 +23,8 @@ const (
 	OpNotEqual
 	OpGreaterThan        // Opposite done by swapping operands
 	OpGreaterThanOrEqual // Opposite done by swapping operands
+	OpMinus
+	OpBang
 )
 
 type Definition struct {
@@ -43,6 +45,8 @@ var definitions = map[Opcode]*Definition{
 	OpNotEqual:           {"OpNotEqual", []int{}},
 	OpGreaterThan:        {"OpGreaterThan", []int{}},
 	OpGreaterThanOrEqual: {"OpGreaterThanOrEqual", []int{}},
+	OpMinus:              {"OpMinus", []int{}},
+	OpBang:               {"OpBang", []int{}},
 }
 
 func (ins Instructions) String() string {

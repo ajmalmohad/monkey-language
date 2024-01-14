@@ -5,7 +5,6 @@ import (
 	"monkey/code"
 	"monkey/compiler"
 	"monkey/object"
-	"os"
 )
 
 const StackSize = 2048
@@ -49,6 +48,16 @@ func (vm *VM) Run() error {
 			}
 		case code.OpAdd, code.OpSub, code.OpMul, code.OpDiv:
 			err := vm.executeBinaryOperation(op)
+			if err != nil {
+				return err
+			}
+		case code.OpBang:
+			err := vm.executeBangOperator()
+			if err != nil {
+				return err
+			}
+		case code.OpMinus:
+			err := vm.executeMinusOperator()
 			if err != nil {
 				return err
 			}
@@ -111,6 +120,27 @@ func nativeBoolToBooleanObject(input bool) *object.Boolean {
 	return False
 }
 
+func (vm *VM) executeBangOperator() error {
+	operand := vm.pop()
+	switch operand {
+	case True:
+		return vm.push(False)
+	case False:
+		return vm.push(True)
+	default:
+		return vm.push(False)
+	}
+}
+
+func (vm *VM) executeMinusOperator() error {
+	operand := vm.pop()
+	if operand.Type() != object.INTEGER_OBJ {
+		return fmt.Errorf("unsupported type for negation: %s", operand.Type())
+	}
+	value := operand.(*object.Integer).Value
+	return vm.push(&object.Integer{Value: -value})
+}
+
 func (vm *VM) executeIntegerComparison(
 	op code.Opcode,
 	left, right object.Object,
@@ -135,7 +165,6 @@ func (vm *VM) executeIntegerComparison(
 func (vm *VM) executeComparison(op code.Opcode) error {
 	right := vm.pop()
 	left := vm.pop()
-	fmt.Fprintln(os.Stderr, "left", left, "right", right)
 
 	if left.Type() == object.INTEGER_OBJ && right.Type() == object.INTEGER_OBJ {
 		return vm.executeIntegerComparison(op, left, right)
