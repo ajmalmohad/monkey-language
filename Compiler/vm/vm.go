@@ -5,9 +5,13 @@ import (
 	"monkey/code"
 	"monkey/compiler"
 	"monkey/object"
+	"os"
 )
 
 const StackSize = 2048
+
+var True = &object.Boolean{Value: true}
+var False = &object.Boolean{Value: false}
 
 type VM struct {
 	constants    []object.Object
@@ -38,8 +42,23 @@ func (vm *VM) Run() error {
 			if err != nil {
 				return err
 			}
+		case code.OpEqual, code.OpNotEqual, code.OpGreaterThan, code.OpGreaterThanOrEqual:
+			err := vm.executeComparison(op)
+			if err != nil {
+				return err
+			}
 		case code.OpAdd, code.OpSub, code.OpMul, code.OpDiv:
 			err := vm.executeBinaryOperation(op)
+			if err != nil {
+				return err
+			}
+		case code.OpTrue:
+			err := vm.push(True)
+			if err != nil {
+				return err
+			}
+		case code.OpFalse:
+			err := vm.push(False)
 			if err != nil {
 				return err
 			}
@@ -83,6 +102,54 @@ func (vm *VM) executeBinaryIntegerOperation(
 		return fmt.Errorf("unknown integer operator: %d", op)
 	}
 	return vm.push(&object.Integer{Value: result})
+}
+
+func nativeBoolToBooleanObject(input bool) *object.Boolean {
+	if input {
+		return True
+	}
+	return False
+}
+
+func (vm *VM) executeIntegerComparison(
+	op code.Opcode,
+	left, right object.Object,
+) error {
+	leftValue := left.(*object.Integer).Value
+	rightValue := right.(*object.Integer).Value
+
+	switch op {
+	case code.OpEqual:
+		return vm.push(nativeBoolToBooleanObject(leftValue == rightValue))
+	case code.OpNotEqual:
+		return vm.push(nativeBoolToBooleanObject(leftValue != rightValue))
+	case code.OpGreaterThan:
+		return vm.push(nativeBoolToBooleanObject(leftValue > rightValue))
+	case code.OpGreaterThanOrEqual:
+		return vm.push(nativeBoolToBooleanObject(leftValue >= rightValue))
+	default:
+		return fmt.Errorf("unknown integer operator: %d", op)
+	}
+}
+
+func (vm *VM) executeComparison(op code.Opcode) error {
+	right := vm.pop()
+	left := vm.pop()
+	fmt.Fprintln(os.Stderr, "left", left, "right", right)
+
+	if left.Type() == object.INTEGER_OBJ && right.Type() == object.INTEGER_OBJ {
+		return vm.executeIntegerComparison(op, left, right)
+	}
+
+	switch op {
+	case code.OpEqual:
+		return vm.push(nativeBoolToBooleanObject(right == left))
+	case code.OpNotEqual:
+		return vm.push(nativeBoolToBooleanObject(right != left))
+	default:
+		return fmt.Errorf("unknown operator: %d (%s %s)",
+			op, left.Type(), right.Type())
+	}
 }
 
 func (vm *VM) push(o object.Object) error {
