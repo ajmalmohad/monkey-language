@@ -1,3 +1,2 @@
-# Programming Language
-_Interpreter Written in GO_ <br/>
-_Soon to be Compiler Written in GO_
+# Monkey Programming Language
+_Implemented as an Interpreted Language as well as a Compiled Language_
